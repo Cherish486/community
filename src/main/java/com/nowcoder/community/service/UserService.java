@@ -7,6 +7,7 @@ import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.utils.CommunityConstant;
 import com.nowcoder.community.utils.CommunityUtil;
+import com.nowcoder.community.utils.HostHolder;
 import com.nowcoder.community.utils.MailClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class UserService implements CommunityConstant {
 
     @Autowired
     private LoginTicketMapper loginTicketMapper;
+
+    @Autowired
+    private HostHolder hostHolder;
 
     @Value("${community.path.domain}")
     private String domain;
@@ -151,7 +155,7 @@ public class UserService implements CommunityConstant {
 
         // 验证密码
         password = CommunityUtil.md5(password+user.getSalt());
-        if(user.getPassword().equals(password)){
+        if(!user.getPassword().equals(password)){
             map.put("passwordMsg","密码不正确！");
             return map;
         }
@@ -180,5 +184,27 @@ public class UserService implements CommunityConstant {
 
     public int updateHeader(int userId,String headerUrl){
         return userMapper.updateHeader(userId,headerUrl);
+    }
+
+    public Map<String , Object> updatePassword(String oldPassword, String newPassword){
+        Map<String , Object> map = new HashMap<>();
+        User user = hostHolder.getUser();
+        System.out.println("=====================");
+        System.out.println(user);
+        oldPassword = CommunityUtil.md5(oldPassword+user.getSalt());
+        if(!user.getPassword().equals(oldPassword)){
+            map.put("passwordMsg","密码不正确！");
+            return map;
+        }
+        String salt = CommunityUtil.generateUUID().substring(0,5);
+        System.out.println("==================================");
+        System.out.println("==================================");
+        System.out.println(salt);
+        System.out.println("==================================");
+        System.out.println("==================================");
+        userMapper.updateSalt(user.getId(),salt);
+        userMapper.updatePassword(user.getId(),CommunityUtil.md5(newPassword + salt));
+
+        return null;
     }
 }

@@ -25,6 +25,7 @@ import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.ref.ReferenceQueue;
 import java.util.Map;
 
 @Controller
@@ -135,4 +136,5 @@ public class LoginController implements CommunityConstant {
         userService.logout(ticket);
         return "redirect:/login";
     }
+
 }

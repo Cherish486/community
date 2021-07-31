@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
@@ -108,5 +109,28 @@ public class UserController {
             logger.error("读取头像失败：" + e.getMessage());
         }
     }
+
+    @RequestMapping(path = "/updatepassword",method = RequestMethod.GET)
+    public String update(String oldPassword,String newPassword, Model model){
+        Map<String, Object> map = userService.updatePassword(oldPassword, newPassword);
+        if(map == null){
+            return "redirect:/index";
+        }else{
+            model.addAttribute("passwordMsg",map.get("passwordMsg"));
+            return "/site/setting";
+        }
+    }
+
+    @RequestMapping(path = "/profile",method = RequestMethod.GET)
+    public String mypost(){
+        return "/site/profile";
+    }
+
+    @RequestMapping(path = "/forget",method = RequestMethod.GET)
+    public String forget(){
+        return "/site/forget";
+    }
+
+
 
 }
