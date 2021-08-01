@@ -189,19 +189,12 @@ public class UserService implements CommunityConstant {
     public Map<String , Object> updatePassword(String oldPassword, String newPassword){
         Map<String , Object> map = new HashMap<>();
         User user = hostHolder.getUser();
-        System.out.println("=====================");
-        System.out.println(user);
         oldPassword = CommunityUtil.md5(oldPassword+user.getSalt());
         if(!user.getPassword().equals(oldPassword)){
             map.put("passwordMsg","密码不正确！");
             return map;
         }
         String salt = CommunityUtil.generateUUID().substring(0,5);
-        System.out.println("==================================");
-        System.out.println("==================================");
-        System.out.println(salt);
-        System.out.println("==================================");
-        System.out.println("==================================");
         userMapper.updateSalt(user.getId(),salt);
         userMapper.updatePassword(user.getId(),CommunityUtil.md5(newPassword + salt));
 
