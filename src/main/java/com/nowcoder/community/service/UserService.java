@@ -189,21 +189,41 @@ public class UserService implements CommunityConstant {
     public Map<String , Object> updatePassword(String oldPassword, String newPassword){
         Map<String , Object> map = new HashMap<>();
         User user = hostHolder.getUser();
-        System.out.println("=====================");
-        System.out.println(user);
         oldPassword = CommunityUtil.md5(oldPassword+user.getSalt());
         if(!user.getPassword().equals(oldPassword)){
             map.put("passwordMsg","密码不正确！");
             return map;
         }
         String salt = CommunityUtil.generateUUID().substring(0,5);
-        System.out.println("==================================");
-        System.out.println("==================================");
-        System.out.println(salt);
-        System.out.println("==================================");
-        System.out.println("==================================");
         userMapper.updateSalt(user.getId(),salt);
         userMapper.updatePassword(user.getId(),CommunityUtil.md5(newPassword + salt));
+
+        return null;
+    }
+
+    public Map<String, Object> getCode(String email){
+        User user = userMapper.selectByEmail(email);
+
+        Map<String, Object> map = new HashMap<>();
+        if(user == null){
+            map.put("emailMsg","该邮箱未被注册！");
+            return map;
+        }
+
+        Context context = new Context();
+        context.setVariable("email",user.getEmail());
+        String code = CommunityUtil.generateUUID().substring(0,5);
+        context.setVariable("code",code);
+        map.put("code",code);
+
+        String content = templateEngine.process("/mail/forget",context);
+        mailClient.sendMail(email,"找回密码",content);
+
+        return map;
+    }
+
+    public Map<String , Object> forget(String email, String code, String password){
+
 
         return null;
     }

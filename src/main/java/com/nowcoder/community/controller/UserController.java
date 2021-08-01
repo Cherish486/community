@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -121,16 +122,21 @@ public class UserController {
         }
     }
 
-    @RequestMapping(path = "/profile",method = RequestMethod.GET)
-    public String mypost(){
-        return "/site/profile";
-    }
-
-    @RequestMapping(path = "/forget",method = RequestMethod.GET)
-    public String forget(){
+    @RequestMapping(path = "/getcode",method = RequestMethod.POST)
+    public String getcode(String email, HttpSession session, Model model) {
+        System.out.println(email);
+        // Map<String, Object> map = userService.getCode(email);
+        // if(map.containsKey("emailMsg")){
+        //     model.addAttribute("emailMsg",map.get("emailMsg"));
+        //     return "/site/forget";
+        // }
+        // session.setAttribute("code",map.get("code"));
         return "/site/forget";
     }
 
-
+    @RequestMapping(path = "/forget",method = RequestMethod.GET)
+    public String getForgetPage(){
+        return "/site/forget";
+    }
 
 }
