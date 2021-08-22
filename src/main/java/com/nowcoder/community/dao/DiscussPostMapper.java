@@ -10,7 +10,7 @@ import java.util.List;
 public interface DiscussPostMapper {
 
     //offset每一页起始行的行号，limit 每一页最多显示多少个数据
-    List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit);
+    List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit, int orderMode);
 
     // @Param注解用于给参数起别名
     int selectDiscussPostRows(@Param("userId") int userId);
@@ -24,5 +24,7 @@ public interface DiscussPostMapper {
     int updateType(int id, int type);
 
     int updateStatus(int id, int status);
+
+    int updateScore(int id, double score);
 
 }
